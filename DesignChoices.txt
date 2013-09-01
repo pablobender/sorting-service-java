@@ -1,0 +1,81 @@
+A estrutura de arquivos da implementação está organizada da seguinte forma:
+Usei dois caminhos de BuildPath na configuração do projeto no eclipse para
+separar os arquivos da implementação dos arquivos de teste e ainda manter a
+mesma estrutura de pacotes entre as classes da implementação e dos testes de
+unidade.
+
+O diretório 'src' contém os arquivos fontes da implementação.
+O diretório 'test' contem os arquivos fontes dos testes de unidade.
+O diretório 'test/config' contém os arquivos xml de configuração do serviço
+usados nos testes.
+
+
+* Descrição das classes e observações *
+
+= Book
+A classe Book representa cada livro a ser ordenado. Inicialmente foi
+implementada como Comparable<Book> mas com a evolução da implementação, esta
+não se apresentou como uma alternativa interessante quando surgiu a
+necessidade de se configurar os parâmetros/atributos para ordenação. A
+Configuração teria que ser definida em cada instância de Book, ou a
+configuração teria que ser compartilhada por todas as instâncias, através de
+um atributo de classe (static) ou uma Factory. Apesar de existirem estas e
+outras alternativas optei por implementar uma classe com a responsabilidade de
+comparar as instâncias de Book, implementando um Comparator<Book> (A classe é
+a BookComparator descrita adiante). Este objeto teria a configuração dos
+atributos a serem usados para ordenação, eliminando o problema descrito
+anteriormente. A classe Book assim serve apenas como estrutura de dados para
+os livros a serem ordenados.
+
+= SortConfiguration
+A classe SortConfiguration tem a função de representar a configuração do
+serviço de ordenação. Como a configuração é uma sequencia de atributos de
+Book, cada um associado à sua direção (ascendente ou descendente), a classe
+SortConfiguration foi implementada como Iterable<SortAttribute>
+(SortAttribute está definida a diante).
+
+= SortAttribute
+A classe SortAttribute representa a configuração de cada atributo definido na
+configuração do serviço de ordenação (SortConfiguration descrita acima). Foram
+usados enums para definir os valores possíveis de cada atributo de Book (title,
+author e edition) e para a direção da ordenação (asc ou desc). Uma vez
+instanciado o SortAttribute, ele deve ser configurado (attribute e direction) e
+inserido na configuração de ordenação (SortConfiguration).
+
+= BookComparator
+A classe BookComparator é a classe que faz a comparação de livros, conforme a
+configuração (SortConfiguration) definida nele. Assim a ordenação dos livros é
+feita confirme a comparação efetuada pela instância de BookComparator.
+
+= BookSorter
+A classe BookSorter é a classe que implementa o servido principal definido no
+problema. Ela que vai receber a lista de livros (Book) e proceder a ordenação.
+O nome BookSorter foi obtido na leitura do documento de casos de teste. Conforme
+a definição do problema, se a lista informada for null, deve lançar uma exceção.
+Para isto foi definida a classe OrderingException cujo o nome também foi
+extraído do documento de caso de testes.
+
+= SortConfigurationLoader
+A Interface SortConfigurationLoader foi definida para existir um tipo comum de
+leitor de configuração a partir de arquivos. O objetivo de cada implementação de
+SortConfigurationLoader é criar uma instância de SortConfiguration a partir de
+informações externas ao programa, através de arquivos conforme definido no
+documento de Caso de Uso. Qualquer que seja a fonte da configuração a ser
+instanciada, arquivos .xml, .ini, .txt, .yaml
+
+= LoadingSortConfigurationException
+A Exceção LoadingSortConfigurationException foi definida permitir que cada
+implementação de SortConfigurationLoader, quando não puder criar a instância de
+SortConfiguration, lançar uma exceção deste tipo. O objetivo é não deixar uma
+exceção genérica como Exception definida na interface SortConfigurationLoader.
+Exception serve para qualquer erro, inclusive os não tratados especificamente
+pela implementação do SortConfigurationLoader. Acho que lançar uma exceção de
+tipo específico é mais interessante neste caso.
+
+= XmlSortConfigurationLoader
+Esta é um exemplo de implementação da interface SortConfigurationLoader, que
+retorna uma instância de SortConfiguration a partir de um arquivo XML. Exemplos
+dos arquivos XML estão no diretório 'test/config'. O arquivo
+'test/config/TitleAscAndEditionDesc.xml' é um arquivo que define mais de um
+atributo para a configuração de ordenação.
+

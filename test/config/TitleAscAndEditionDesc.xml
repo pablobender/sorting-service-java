@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sortConfiguration>
+	<sortAttributes>
+		<sortAttribute>
+			<attribute>title</attribute>
+			<direction>asc</direction>
+		</sortAttribute>
+		<sortAttribute>
+			<attribute>edition</attribute>
+			<direction>desc</direction>
+		</sortAttribute>
+	</sortAttributes>
+</sortConfiguration>
